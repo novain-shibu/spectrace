@@ -16,9 +16,10 @@ What this report adds:
 1. **Validation against real engines** (the papers above report the estimate itself): HF and vLLM, greedy and sampling.
 2. **Drafter selection for RL rollouts**: ranking candidate drafters from ordinary rollouts, including across a real RL policy
    change (Qwen2.5-1.5B -> SimpleRL-Zoo-1.5B).
-3. **An exact engine conformance check** for deterministic or greedy drafters. On vLLM 0.31 it (a) isolated a previously unreported
-   (to our knowledge) accepted-token overcount at `max_tokens`: the scheduler counts accepted drafts before trimming the output at
-   the stop point, and (b) independently reproduced and quantified the known `ngram_gpu` drafted-token inflation (open PR #44056).
+3. **An exact engine conformance check** for deterministic or greedy drafters. On vLLM 0.31 it independently detected two KNOWN
+   counter issues: (a) accepted drafts counted before the output is trimmed at a stop point such as `max_tokens` (vLLM issue
+   #56101; open PRs #56137, #56195), and (b) the `ngram_gpu` drafted-token inflation (open PR #44056). It found them without
+   prior knowledge of either, which is evidence that the check works; neither is a new finding.
 
 Throughout, "speed-up" means fewer target forward passes (rounds); wall-clock time is not measured here.
 
@@ -93,11 +94,12 @@ construction (the identity already includes resampling from the residual after a
 sampling noise; a larger run would settle it. Per-token end-of-sequence proposals were not logged, so they could not be analysed.
 
 ### 2.6 vLLM 0.31 conformance (Qwen2.5-1.5B-Instruct, T4, fp16)
-- **Previously unreported (to our knowledge): accepted-token overcount at `max_tokens`.** vLLM 0.31's scheduler computes
+- **Accepted-token overcount at `max_tokens` (known: vLLM issue #56101, open PRs #56137 and #56195 on terminal-step accounting).**
+  Correction: v0.1.0 of this report called this previously unreported; that was wrong. vLLM 0.31's scheduler computes
   `num_accepted = len(generated_token_ids) - num_sampled` before `_update_request_with_output` trims the step's tokens at the stop
   point, so drafts verified on the final pass beyond `max_tokens` are counted as accepted and then discarded. In our 17-config sweep
   every mismatch was on a request with finish_reason=length (+1 to +3 accepted tokens per affected config). Metrics only; outputs
-  are unaffected. No existing vLLM issue found (search 2026-10-16).
+  are unaffected. Our replay detected it independently and matches the mechanism described in #56137.
 - n-gram (CPU), 30 single requests, greedy: replaying vLLM's proposer on vLLM's outputs reproduces drafts, drafted tokens and accepted
   tokens exactly for 30/30 requests (`tests/test_spectrace.py` re-checks this without a GPU).
 - 17 configurations (greedy and sampling with top-p/top-k and penalties, batching, prefix caching off, chunked long prompts, k 2/4/8,

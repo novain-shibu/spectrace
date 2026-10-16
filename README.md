@@ -17,9 +17,9 @@ This repository contributes engine validation, RL drafter-selection experiments 
   of the 2nd/3rd drafters between two policies followed; ~2 s to predict vs ~5 min to measure.
 - Real RL pair (Qwen2.5-1.5B -> SimpleRL-Zoo-1.5B): drafter ranking unchanged by RL and preserved by the prediction; the 11-19%
   drop in passes after RL is tracked; errors within ~1 standard error.
-- vLLM 0.31: n-gram counters reproduced exactly (30/30). Isolated a previously unreported (to our knowledge) accepted-token
-  overcount at `max_tokens` (counted before the output is trimmed), and independently quantified the known `ngram_gpu`
-  drafted-token inflation (~10x; open vLLM PR #44056).
+- vLLM 0.31: n-gram counters reproduced exactly (30/30). The replay check independently detected two known counter issues:
+  accepted drafts counted before the output is trimmed at `max_tokens` (vLLM #56101, PRs #56137/#56195) and the `ngram_gpu`
+  drafted-token inflation (~10x; PR #44056). Correction: v0.1.0 called the first one previously unreported; it is not.
 
 ## Use
 ```python
