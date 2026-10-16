@@ -1,6 +1,6 @@
 # Predicting speculative-decoding pass counts without running the drafter: real-engine validation, drafter selection for RL rollouts, and an exact engine check
 
-Novain Shibu, 2026-10-16. Version 0.1.0. DOI: 10.5281/zenodo.23413796 (all versions), 10.5281/zenodo.23413797 (v0.1.0). All numbers below are regenerated from the raw Kaggle logs by `results/make_results.py`
+Novain Shibu, 2026-10-16. Version 0.1.1 (correction of 0.1.0, see section 2.6). DOI: 10.5281/zenodo.23413796 (all versions); v0.1.0: 10.5281/zenodo.23413797. All numbers below are regenerated from the raw Kaggle logs by `results/make_results.py`
 (output: `results/summary.md`). Hardware: one free NVIDIA T4 (Kaggle). Models: Qwen2.5 0.5B / 1.5B. Engines: Hugging Face
 transformers 5.16 (assisted generation) and vLLM 0.31.0.
 
