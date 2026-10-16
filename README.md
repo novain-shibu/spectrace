@@ -1,5 +1,7 @@
 # spectrace
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23413796.svg)](https://doi.org/10.5281/zenodo.23413796)
+
 Predicting speculative-decoding pass counts (target forward passes per output, not wall-clock) from outputs a model has already produced, checked against real engines (Hugging Face,
 vLLM), used to choose drafters for RL rollouts, plus an exact conformance check for inference-engine speculative-decoding counters.
 
@@ -43,6 +45,10 @@ Test (CPU, no downloads): `python tests/test_spectrace.py`
 
 ## Limits
 Small models, one GPU type, HF + vLLM only; EAGLE/MTP drafters untested; passes are not wall-clock. See REPORT.md section 4.
+
+## Cite
+Novain Shibu (2026). spectrace. Zenodo. https://doi.org/10.5281/zenodo.23413796 (v0.1.0: 10.5281/zenodo.23413797).
+Please also cite Zhao & Cai, arXiv:2610.10411, for the offline round estimator.
 
 ## Licence
 Apache-2.0. See NOTICE (vLLM-derived code, prior work, models and data).
