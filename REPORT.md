@@ -1,4 +1,4 @@
-# Predicting speculative-decoding speed-ups without running the drafter: real-engine validation, drafter selection for RL rollouts, and an exact engine check
+# Predicting speculative-decoding pass counts without running the drafter: real-engine validation, drafter selection for RL rollouts, and an exact engine check
 
 Novain Shibu, 2026-10-16. Version 0.1.0. All numbers below are regenerated from the raw Kaggle logs by `results/make_results.py`
 (output: `results/summary.md`). Hardware: one free NVIDIA T4 (Kaggle). Models: Qwen2.5 0.5B / 1.5B. Engines: Hugging Face
@@ -16,7 +16,11 @@ What this report adds:
 1. **Validation against real engines** (the papers above report the estimate itself): HF and vLLM, greedy and sampling.
 2. **Drafter selection for RL rollouts**: ranking candidate drafters from ordinary rollouts, including across a real RL policy
    change (Qwen2.5-1.5B -> SimpleRL-Zoo-1.5B).
-3. **An exact engine conformance check** for deterministic or greedy drafters, which found two counter issues in vLLM 0.31.
+3. **An exact engine conformance check** for deterministic or greedy drafters. On vLLM 0.31 it (a) isolated a previously unreported
+   (to our knowledge) accepted-token overcount at `max_tokens`: the scheduler counts accepted drafts before trimming the output at
+   the stop point, and (b) independently reproduced and quantified the known `ngram_gpu` drafted-token inflation (open PR #44056).
+
+Throughout, "speed-up" means fewer target forward passes (rounds); wall-clock time is not measured here.
 
 ## 1. The quantities
 
@@ -65,8 +69,8 @@ computed from HF's own p,q vs from the predictor's p,q on the same prefixes (rea
 | Qwen2.5-Math-1.5B-Instruct <- 0.5B (base) | 36.52 +- 0.73 | 36.46 +- 0.66 | +0.2% |
 | Qwen2.5-Math-1.5B-Instruct <- Coder-0.5B-Instruct | 35.47 +- 0.70 | 35.38 +- 0.87 | +0.3% |
 
-The best drafter is ranked correctly for both policies. The base/Coder order differs between the two policies and the prediction
-follows it (for the Instruct policy that gap is about one standard error). Prediction took 2-6 s per drafter vs ~290-320 s to measure.
+The best drafter is ranked correctly for both policies. Between the two policies the 2nd/3rd places swap (base vs Coder), and the
+prediction follows the swap (for the Instruct policy that gap is about one standard error, so that half of the swap is not certain). Prediction took 2-6 s per drafter vs ~290-320 s to measure.
 
 ### 2.5 A real RL policy change: Qwen2.5-1.5B -> hkust-nlp/Qwen-2.5-1.5B-SimpleRL-Zoo (T=1, k=4, 20 prompts x 2)
 | policy | drafter | predicted | real | error |
@@ -78,18 +82,26 @@ follows it (for the Instruct policy that gap is about one standard error). Predi
 | after RL | 0.5B-Instruct | 46.38 +- 1.89 | 48.10 +- 1.97 | -3.6% |
 | after RL | Coder-0.5B-Instruct | 49.69 +- 2.20 | 49.62 +- 2.91 | +0.1% |
 
-Ranking is correct at both real policies; every error is within about one standard error. RL lowered the passes needed by every
-drafter (11-19%). Interpolated-weight intermediate policies (prediction only, a proxy, not real checkpoints) move smoothly; see
+Here the full ranking (base < Instruct < Coder) is the SAME before and after RL, and the prediction preserves it at both real
+policies; what changes is the level: RL lowered the passes needed by every drafter by 11-19%, which the prediction tracks. Every
+error is within about one standard error. Interpolated-weight intermediate policies (prediction only, a proxy, not real checkpoints) move smoothly; see
 `results/summary.md`. A paired per-prompt re-run (32 prompts) gave errors +2.9 +- 3.4%, -4.4 +- 3.6%, +5.5 +- 3.8%, +1.7 +- 4.4%;
-no 95% interval excludes zero. Across tests the 0.5B-Instruct drafter was under-predicted three times (each within noise); the
-mechanism checks in 2.3 rule out a p/q mismatch as the cause. Open item.
+no 95% interval excludes zero. Across tests the 0.5B-Instruct drafter was under-predicted three times (-2.7%, -3.6%, -4.4%), each within about one
+standard error. Section 2.3 rules out a per-token p/q mismatch (expected acceptance from HF's own p,q matches ours within
+0.02-0.31%), and end-of-sequence masking under `min_new_tokens` accounts for at most ~0.2%. The estimator is unbiased by
+construction (the identity already includes resampling from the residual after a rejection), so we attribute the residual to
+sampling noise; a larger run would settle it. Per-token end-of-sequence proposals were not logged, so they could not be analysed.
 
 ### 2.6 vLLM 0.31 conformance (Qwen2.5-1.5B-Instruct, T4, fp16)
+- **Previously unreported (to our knowledge): accepted-token overcount at `max_tokens`.** vLLM 0.31's scheduler computes
+  `num_accepted = len(generated_token_ids) - num_sampled` before `_update_request_with_output` trims the step's tokens at the stop
+  point, so drafts verified on the final pass beyond `max_tokens` are counted as accepted and then discarded. In our 17-config sweep
+  every mismatch was on a request with finish_reason=length (+1 to +3 accepted tokens per affected config). Metrics only; outputs
+  are unaffected. No existing vLLM issue found (search 2026-10-16).
 - n-gram (CPU), 30 single requests, greedy: replaying vLLM's proposer on vLLM's outputs reproduces drafts, drafted tokens and accepted
   tokens exactly for 30/30 requests (`tests/test_spectrace.py` re-checks this without a GPU).
 - 17 configurations (greedy and sampling with top-p/top-k and penalties, batching, prefix caching off, chunked long prompts, k 2/4/8,
-  fp32, stop strings, log-probs): the only differences are on requests that stop at `max_tokens`, where drafts verified on the final
-  pass beyond the budget are counted as accepted and then truncated (+1 to +3 accepted tokens per affected config).
+  fp32, stop strings, log-probs): the only differences are the `max_tokens` overcount above.
 - `ngram_gpu`: drafted-token counters inflated ~9-10x (e.g. 11,936 vs 1,283 drafted, 302 = 302 accepted), so reported acceptance is
   ~2.5% instead of ~23.5%. This is the issue addressed by open vLLM PR #44056 (trimmed invalid GPU drafts never reach the stats).
 - `draft_model` (Qwen2.5-0.5B drafter): drafts equal the fp32 teacher-forced key (916 = 916 greedy fp32; 1,010 = 1,010 sampling);

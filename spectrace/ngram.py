@@ -41,13 +41,13 @@ def vllm_ngram_propose(tokens, k, min_n, max_n, max_model_len):
     return tokens[start:start + min(k, n - start)]
 
 
-def replay_deterministic(prompt, output, propose, start=1):
+def replay_deterministic(prompt_ids, output_ids, propose, start=1):
     """Replay a deterministic drafter on an engine's output. Returns [drafts, drafted_tokens, accepted]."""
     pos, drafts, drafted, accepted = start, 0, 0, 0
-    while pos < len(output):
-        d = propose(prompt + output[:pos])
+    while pos < len(output_ids):
+        d = propose(prompt_ids + output_ids[:pos])
         n = 0
-        while n < len(d) and pos + n < len(output) and d[n] == output[pos + n]:
+        while n < len(d) and pos + n < len(output_ids) and d[n] == output_ids[pos + n]:
             n += 1
         if d:
             drafts += 1
