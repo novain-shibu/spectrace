@@ -1,0 +1,32 @@
+[{"stream_name":"stdout","time":204.729278394,"data":"offline install rc 0 26.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":204.7293328,"data":"google-adk 2.7.1 requires opentelemetry-api\u003c=1.42.1,\u003e=1.39, but you have opentelemetry-api 1.45.1 which is incompatible.\n"}
+,{"stream_name":"stdout","time":204.729337266,"data":"google-adk 2.7.1 requires opentelemetry-sdk\u003c=1.42.1,\u003e=1.39, but you have opentelemetry-sdk 1.45.1 which is incompatible.\n"}
+,{"stream_name":"stdout","time":204.729340262,"data":"\n"}
+,{"stream_name":"stdout","time":205.910103126,"data":"setup 205 s, local model: ['/kaggle/input/notebooks/<kaggle-user>/spectrace-wheelhouse/models/Qwen2.5-1.5B-Instruct']\n"}
+,{"stream_name":"stdout","time":412.307382459,"data":"preflight rc 0 ['ROW {\"per_request_mismatch\": 0, \"n\": 2, \"engine_total\": [14, 56, 13], \"replay_total\": [14, 56, 13], \"match\": true, \"name\": \"preflight\"}'] \n"}
+,{"stream_name":"stdout","time":630.647138815,"data":"G1_ngramgpu_greedy_b1 rc 0 218 s ROW {\"per_request_mismatch\": 30, \"n\": 30, \"engine_total\": [2984, 11936, 302], \"replay_total\": [322, 1283, 302], \"match\": false, \"name\": \"G1_ngramgpu_greedy_b1\"}\n"}
+,{"stream_name":"stdout","time":754.014481314,"data":"G2_ngramgpu_greedy_batch rc 0 123 s ROW {\"engine_total\": [2991, 11964, 295], \"replay_total\": [319, 1271, 295], \"match\": false, \"name\": \"G2_ngramgpu_greedy_batch\"}\n"}
+,{"stream_name":"stdout","time":924.246787224,"data":"G3_ngramgpu_sample_b1 rc 0 170 s ROW {\"per_request_mismatch\": 30, \"n\": 30, \"engine_total\": [3069, 12276, 256], \"replay_total\": [294, 1174, 253], \"match\": false, \"name\": \"G3_ngramgpu_sample_b1\"}\n"}
+,{"stream_name":"stdout","time":978.689494327,"data":"G4_ngramgpu_sample_batch rc 0 54 s ROW {\"engine_total\": [2918, 11672, 240], \"replay_total\": [268, 1067, 235], \"match\": false, \"name\": \"G4_ngramgpu_sample_batch\"}\n"}
+,{"stream_name":"stdout","time":1148.287021853,"data":"G5_ngramgpu_long_chunked rc 0 170 s ROW {\"per_request_mismatch\": 3, \"n\": 3, \"engine_total\": [173, 692, 355], \"replay_total\": [129, 516, 354], \"match\": false, \"name\": \"G5_ngramgpu_long_chunked\"}\n"}
+,{"stream_name":"stdout","time":1308.093202109,"data":"G6_ngramgpu_batch_maxseqs4 rc 0 160 s ROW {\"engine_total\": [2988, 11952, 298], \"replay_total\": [321, 1279, 298], \"match\": false, \"name\": \"G6_ngramgpu_batch_maxseqs4\"}\n"}
+,{"stream_name":"stdout","time":1507.221718907,"data":"G7_ngramgpu_k8_n1_3 rc 0 199 s ROW {\"per_request_mismatch\": 30, \"n\": 30, \"engine_total\": [2810, 22480, 478], \"replay_total\": [1135, 8879, 476], \"match\": false, \"name\": \"G7_ngramgpu_k8_n1_3\"}\n"}
+,{"stream_name":"stdout","time":1684.970678855,"data":"G8_ngramgpu_long_batch_sample rc 0 178 s ROW {\"engine_total\": [188, 752, 338], \"replay_total\": [126, 504, 338], \"match\": false, \"name\": \"G8_ngramgpu_long_batch_sample\"}\n"}
+,{"stream_name":"stdout","time":1791.903286981,"data":"G9_ngramgpu_reppen_sample rc 0 107 s ROW {\"per_request_mismatch\": 30, \"n\": 30, \"engine_total\": [3075, 12300, 170], \"replay_total\": [205, 815, 170], \"match\": false, \"name\": \"G9_ngramgpu_reppen_sample\"}\n"}
+,{"stream_name":"stdout","time":2039.381020977,"data":"D1_draft_greedy_fp32_b1 rc 0 247 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [916, 3664, 2427], \"replay_total\": [916, 3664, 2427], \"match\": null, \"name\": \"D1_draft_greedy_fp32_b1\"}\n"}
+,{"stream_name":"stdout","time":2248.355092243,"data":"D2_draft_greedy_fp16_b1 rc 0 209 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [916, 3664, 2426], \"replay_total\": [916, 3664, 2426], \"match\": null, \"name\": \"D2_draft_greedy_fp16_b1\"}\n"}
+,{"stream_name":"stdout","time":2439.258068305,"data":"D3_draft_sample_fp32_b1 rc 0 191 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [1010, 4040, 2243], \"replay_total\": [1010, 4040, 2243], \"match\": null, \"name\": \"D3_draft_sample_fp32_b1\"}\n"}
+,{"stream_name":"stdout","time":2577.172070699,"data":"D4_draft_greedy_fp32_batch rc 0 138 s ROW {\"engine_total\": [916, 3664, 2427], \"replay_total\": null, \"match\": false, \"name\": \"D4_draft_greedy_fp32_batch\"}\n"}
+,{"stream_name":"stderr","time":2585.995463434,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:31,  3.17it/s]\rLoading weights:  71%|███████▏  | 207/290 [00:00\u003c00:00, 637.82it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 538.30it/s]\n"}
+,{"stream_name":"stdout","time":2590.807896518,"data":"DRAFT_ORACLE D1_draft_greedy_fp32_b1 engine [916, 3664, 2427] oracle_fp32_teacher_forced [916, 3664, 2390] per_request_exact 11\n"}
+,{"stream_name":"stdout","time":2592.604955314,"data":"DRAFT_ORACLE D2_draft_greedy_fp16_b1 engine [916, 3664, 2426] oracle_fp32_teacher_forced [917, 3668, 2388] per_request_exact 10\n"}
+,{"stream_name":"stdout","time":2594.399966395,"data":"DRAFT_ORACLE D3_draft_sample_fp32_b1 engine [1010, 4040, 2243] oracle_fp32_teacher_forced [1010, 4040, 2209] per_request_exact 12\n"}
+,{"stream_name":"stdout","time":2596.206710876,"data":"DRAFT_ORACLE D4_draft_greedy_fp32_batch engine [916, 3664, 2427] oracle_fp32_teacher_forced [916, 3664, 2390] per_request_exact None\n"}
+,{"stream_name":"stdout","time":2596.207868112,"data":"TOTAL 2595 s\n"}
+,{"stream_name":"stderr","time":2599.49227327,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2599.49230513,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2599.721207471,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2599.721248919,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2600.658633939,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2601.771145209,"data":"[NbConvertApp] Writing 340431 bytes to __results__.html\n"}
+]

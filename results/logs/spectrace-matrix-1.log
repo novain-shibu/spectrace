@@ -1,0 +1,31 @@
+[{"stream_name":"stdout","time":201.182152568,"data":"offline install rc 0 26.1, but you have protobuf 7.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":201.182234686,"data":"google-adk 2.7.1 requires opentelemetry-api\u003c=1.42.1,\u003e=1.39, but you have opentelemetry-api 1.45.1 which is incompatible.\n"}
+,{"stream_name":"stdout","time":201.182244568,"data":"google-adk 2.7.1 requires opentelemetry-sdk\u003c=1.42.1,\u003e=1.39, but you have opentelemetry-sdk 1.45.1 which is incompatible.\n"}
+,{"stream_name":"stdout","time":201.18224909,"data":"\n"}
+,{"stream_name":"stdout","time":202.369340067,"data":"setup 202 s, local model: ['/kaggle/input/notebooks/<kaggle-user>/spectrace-wheelhouse/models/Qwen2.5-1.5B-Instruct']\n"}
+,{"stream_name":"stdout","time":417.381103548,"data":"preflight rc 0 ['ROW {\"per_request_mismatch\": 0, \"n\": 2, \"engine_total\": [14, 56, 13], \"replay_total\": [14, 56, 13], \"match\": true, \"name\": \"preflight\"}'] \n"}
+,{"stream_name":"stdout","time":619.401749473,"data":"A_greedy_b1 rc 0 202 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [322, 1283, 302], \"replay_total\": [322, 1283, 302], \"match\": true, \"name\": \"A_greedy_b1\"}\n"}
+,{"stream_name":"stdout","time":676.533025085,"data":"B_greedy_batch rc 0 57 s ROW {\"engine_total\": [321, 1279, 298], \"replay_total\": [321, 1279, 298], \"match\": true, \"name\": \"B_greedy_batch\"}\n"}
+,{"stream_name":"stdout","time":855.577727054,"data":"C_greedy_noprefixcache rc 0 179 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [317, 1263, 299], \"replay_total\": [317, 1263, 299], \"match\": true, \"name\": \"C_greedy_noprefixcache\"}\n"}
+,{"stream_name":"stdout","time":1007.50032921,"data":"D_greedy_long_chunked rc 0 152 s ROW {\"per_request_mismatch\": 1, \"n\": 3, \"engine_total\": [129, 516, 355], \"replay_total\": [129, 516, 354], \"match\": false, \"name\": \"D_greedy_long_chunked\"}\n"}
+,{"stream_name":"stdout","time":1207.473456155,"data":"E_greedy_k8 rc 0 200 s ROW {\"per_request_mismatch\": 1, \"n\": 30, \"engine_total\": [307, 2393, 309], \"replay_total\": [307, 2393, 307], \"match\": false, \"name\": \"E_greedy_k8\"}\n"}
+,{"stream_name":"stdout","time":1406.346319228,"data":"F_greedy_k2_n1_3 rc 0 199 s ROW {\"per_request_mismatch\": 1, \"n\": 30, \"engine_total\": [1208, 2415, 404], \"replay_total\": [1208, 2415, 403], \"match\": false, \"name\": \"F_greedy_k2_n1_3\"}\n"}
+,{"stream_name":"stdout","time":1510.956185467,"data":"G_sample_T08_b1 rc 0 105 s ROW {\"per_request_mismatch\": 1, \"n\": 30, \"engine_total\": [309, 1228, 269], \"replay_total\": [309, 1228, 268], \"match\": false, \"name\": \"G_sample_T08_b1\"}\n"}
+,{"stream_name":"stdout","time":1569.746416721,"data":"H_sample_T1_batch rc 0 59 s ROW {\"engine_total\": [285, 1135, 258], \"replay_total\": [285, 1135, 258], \"match\": true, \"name\": \"H_sample_T1_batch\"}\n"}
+,{"stream_name":"stdout","time":1678.420068585,"data":"I_sample_topp_topk rc 0 109 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [308, 1229, 266], \"replay_total\": [308, 1229, 266], \"match\": true, \"name\": \"I_sample_topp_topk\"}\n"}
+,{"stream_name":"stdout","time":1789.344904582,"data":"J_sample_reppen rc 0 111 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [201, 801, 118], \"replay_total\": [201, 801, 118], \"match\": true, \"name\": \"J_sample_reppen\"}\n"}
+,{"stream_name":"stdout","time":1896.50504881,"data":"K_greedy_reppen rc 0 107 s ROW {\"per_request_mismatch\": 1, \"n\": 30, \"engine_total\": [230, 917, 216], \"replay_total\": [230, 917, 214], \"match\": false, \"name\": \"K_greedy_reppen\"}\n"}
+,{"stream_name":"stdout","time":2192.010582355,"data":"L_greedy_fp32 rc 0 296 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [327, 1303, 299], \"replay_total\": [327, 1303, 299], \"match\": true, \"name\": \"L_greedy_fp32\"}\n"}
+,{"stream_name":"stdout","time":2333.516127565,"data":"M_greedy_batch_maxseqs4 rc 0 142 s ROW {\"engine_total\": [316, 1259, 295], \"replay_total\": [316, 1259, 295], \"match\": true, \"name\": \"M_greedy_batch_maxseqs4\"}\n"}
+,{"stream_name":"stdout","time":2409.987579698,"data":"N_greedy_stop rc 0 76 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [95, 380, 80], \"replay_total\": [95, 380, 80], \"match\": true, \"name\": \"N_greedy_stop\"}\n"}
+,{"stream_name":"stdout","time":2517.057002132,"data":"O_sample_freqpen rc 0 107 s ROW {\"per_request_mismatch\": 1, \"n\": 30, \"engine_total\": [255, 1017, 190], \"replay_total\": [255, 1017, 187], \"match\": false, \"name\": \"O_sample_freqpen\"}\n"}
+,{"stream_name":"stdout","time":2626.250956831,"data":"P_greedy_logprobs rc 0 109 s ROW {\"per_request_mismatch\": 0, \"n\": 30, \"engine_total\": [322, 1283, 302], \"replay_total\": [322, 1283, 302], \"match\": true, \"name\": \"P_greedy_logprobs\"}\n"}
+,{"stream_name":"stdout","time":2779.169691275,"data":"Q_long_batch_sample rc 0 153 s ROW {\"engine_total\": [136, 544, 365], \"replay_total\": [136, 544, 363], \"match\": false, \"name\": \"Q_long_batch_sample\"}\n"}
+,{"stream_name":"stdout","time":2779.169778829,"data":"TOTAL 2779 s\n"}
+,{"stream_name":"stderr","time":2781.203912148,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2781.203972081,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2781.405575458,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2781.405609962,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2782.333334964,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2783.264697203,"data":"[NbConvertApp] Writing 329046 bytes to __results__.html\n"}
+]

@@ -1,0 +1,109 @@
+# Predicting speculative-decoding speed-ups without running the drafter: real-engine validation, drafter selection for RL rollouts, and an exact engine check
+
+Novain Shibu, 2026-10-16. Version 0.1.0. All numbers below are regenerated from the raw Kaggle logs by `results/make_results.py`
+(output: `results/summary.md`). Hardware: one free NVIDIA T4 (Kaggle). Models: Qwen2.5 0.5B / 1.5B. Engines: Hugging Face
+transformers 5.16 (assisted generation) and vLLM 0.31.0.
+
+## 0. Prior work and what is (and is not) claimed here
+
+The core estimator is **not new**. Zhao and Cai (arXiv:2610.10411, 2026-10-07) give an exact offline evaluator of the expected
+number of speculative-sampling rounds over target-model rollouts, with acceptance terms min{1, q(x)/p(x)} on the sampled tokens,
+and use it for paired drafter comparison without running speculative decoding. Liu et al. (Not-a-Bandit, arXiv:2510.20064)
+evaluate drafters counterfactually from one trajectory using full distributions. We derived the same estimator independently and
+learned of 2610.10411 on 2026-10-16, before this release.
+
+What this report adds:
+1. **Validation against real engines** (the papers above report the estimate itself): HF and vLLM, greedy and sampling.
+2. **Drafter selection for RL rollouts**: ranking candidate drafters from ordinary rollouts, including across a real RL policy
+   change (Qwen2.5-1.5B -> SimpleRL-Zoo-1.5B).
+3. **An exact engine conformance check** for deterministic or greedy drafters, which found two counter issues in vLLM 0.31.
+
+## 1. The quantities
+
+Speculative decoding: a small drafter proposes k tokens, the target verifies them in one forward pass ("pass" / "round").
+Fewer passes per output = faster. Two predictors, both computed from outputs the target has already produced:
+
+- **Greedy (exact).** A drafted token is accepted iff it equals the target's argmax. Along the recorded output, a drafter is fully
+  described by whether its top guess equals the true next token; one teacher-forced drafter pass gives the exact pass count for chain
+  drafting with any k (and for local top-b trees). Not exact for trees chosen by a global budget (e.g. EAGLE-2 dynamic trees).
+- **Sampling (unbiased in expectation).** Weight each recorded token z by a(z) = min(1, q(z)/p(z)) ("drafted and accepted") or 1 - a(z)
+  ("corrected, pass ends"); a renewal dynamic program over the recorded output gives the expected number of passes
+  (`spectrace/sampling.py`). Inputs: the target probability of the chosen token (what serving logs and RL rollouts store) and the
+  drafter's probability of the same token. This is the estimator of 2610.10411.
+- **Deterministic / one-hot drafters in a real engine (exact per run).** With a one-hot draft d, rejection sampling accepts d with
+  probability p(d) and otherwise resamples from a residual that excludes d, so the emitted token equals d iff the draft was accepted.
+  Replaying the drafter on the engine's own outputs therefore reproduces its drafted/accepted counters exactly, for greedy and for any
+  sampling setting. A difference is an engine issue.
+
+## 2. Results
+
+### 2.1 Greedy, draft-model drafter, HF assisted generation (Qwen2.5-1.5B-Instruct target, Qwen2.5-0.5B-Instruct drafter, k=4, 30 prompts)
+- fp32: target forward calls 931 = predicted 931; per request 30/30 equal; outputs identical to plain greedy 30/30.
+- fp16: 932 vs 929; the 4 differing requests are among the 5 where HF's own fp16 assisted output diverged from HF plain greedy.
+- Pitfall found on the way: Qwen2.5 instruct `generation_config` sets `repetition_penalty=1.1`; HF applies it to target and drafter,
+  so a replay that ignores it disagrees (fp32: 360 vs 374). The replay must use the engine's full logits pipeline.
+
+### 2.2 Speculative sampling, HF (T=0.8, k=4, 30 prompts x 4 seeds = 120 runs)
+Real passes 27.28 (SE 0.47) vs predicted 27.36 (SE 0.42), using only ordinary target samples + chosen-token probabilities + one
+teacher-forced drafter pass. (Both sides exclude the first pass; see logs.)
+
+### 2.3 Exact mechanism check (no sampling noise)
+HF's `_speculative_sampling` was wrapped to record the p and q it actually uses for every drafted token; expected accepted tokens
+computed from HF's own p,q vs from the predictor's p,q on the same prefixes (real base policy Qwen2.5-1.5B, T=1, k=4):
+- Qwen2.5-0.5B drafter: 738.97 (HF) vs 738.84 (ours), -0.02%; realized 720.
+- Qwen2.5-0.5B-Instruct drafter: 676.79 vs 674.69, -0.31%; realized 678.
+- Instruct drafter, separate run: 937.7 vs 939.3 raw (+0.17%); 937.9 (+0.02%) when masking <|endoftext|> on both models as HF does
+  under `min_new_tokens`.
+
+### 2.4 Choosing a drafter from rollouts (T=1, k=4, 24 GSM8K prompts x 2)
+| policy <- drafter | predicted passes | real passes | error |
+|---|---|---|---|
+| Qwen2.5-1.5B-Instruct <- 0.5B-Instruct | 31.90 +- 0.44 | 32.00 +- 0.43 | -0.3% |
+| Qwen2.5-1.5B-Instruct <- 0.5B (base) | 33.94 +- 0.48 | 33.54 +- 0.43 | +1.2% |
+| Qwen2.5-1.5B-Instruct <- Coder-0.5B-Instruct | 34.19 +- 0.53 | 34.08 +- 0.50 | +0.3% |
+| Qwen2.5-Math-1.5B-Instruct <- 0.5B-Instruct | 33.92 +- 0.71 | 33.85 +- 0.60 | +0.2% |
+| Qwen2.5-Math-1.5B-Instruct <- 0.5B (base) | 36.52 +- 0.73 | 36.46 +- 0.66 | +0.2% |
+| Qwen2.5-Math-1.5B-Instruct <- Coder-0.5B-Instruct | 35.47 +- 0.70 | 35.38 +- 0.87 | +0.3% |
+
+The best drafter is ranked correctly for both policies. The base/Coder order differs between the two policies and the prediction
+follows it (for the Instruct policy that gap is about one standard error). Prediction took 2-6 s per drafter vs ~290-320 s to measure.
+
+### 2.5 A real RL policy change: Qwen2.5-1.5B -> hkust-nlp/Qwen-2.5-1.5B-SimpleRL-Zoo (T=1, k=4, 20 prompts x 2)
+| policy | drafter | predicted | real | error |
+|---|---|---|---|---|
+| before RL | 0.5B (base) | 50.69 +- 1.80 | 48.17 +- 1.75 | +5.2% |
+| before RL | 0.5B-Instruct | 54.57 +- 2.01 | 56.08 +- 1.97 | -2.7% |
+| before RL | Coder-0.5B-Instruct | 58.87 +- 2.32 | 61.33 +- 2.73 | -4.0% |
+| after RL | 0.5B (base) | 44.57 +- 1.61 | 42.90 +- 1.56 | +3.9% |
+| after RL | 0.5B-Instruct | 46.38 +- 1.89 | 48.10 +- 1.97 | -3.6% |
+| after RL | Coder-0.5B-Instruct | 49.69 +- 2.20 | 49.62 +- 2.91 | +0.1% |
+
+Ranking is correct at both real policies; every error is within about one standard error. RL lowered the passes needed by every
+drafter (11-19%). Interpolated-weight intermediate policies (prediction only, a proxy, not real checkpoints) move smoothly; see
+`results/summary.md`. A paired per-prompt re-run (32 prompts) gave errors +2.9 +- 3.4%, -4.4 +- 3.6%, +5.5 +- 3.8%, +1.7 +- 4.4%;
+no 95% interval excludes zero. Across tests the 0.5B-Instruct drafter was under-predicted three times (each within noise); the
+mechanism checks in 2.3 rule out a p/q mismatch as the cause. Open item.
+
+### 2.6 vLLM 0.31 conformance (Qwen2.5-1.5B-Instruct, T4, fp16)
+- n-gram (CPU), 30 single requests, greedy: replaying vLLM's proposer on vLLM's outputs reproduces drafts, drafted tokens and accepted
+  tokens exactly for 30/30 requests (`tests/test_spectrace.py` re-checks this without a GPU).
+- 17 configurations (greedy and sampling with top-p/top-k and penalties, batching, prefix caching off, chunked long prompts, k 2/4/8,
+  fp32, stop strings, log-probs): the only differences are on requests that stop at `max_tokens`, where drafts verified on the final
+  pass beyond the budget are counted as accepted and then truncated (+1 to +3 accepted tokens per affected config).
+- `ngram_gpu`: drafted-token counters inflated ~9-10x (e.g. 11,936 vs 1,283 drafted, 302 = 302 accepted), so reported acceptance is
+  ~2.5% instead of ~23.5%. This is the issue addressed by open vLLM PR #44056 (trimmed invalid GPU drafts never reach the stats).
+- `draft_model` (Qwen2.5-0.5B drafter): drafts equal the fp32 teacher-forced key (916 = 916 greedy fp32; 1,010 = 1,010 sampling);
+  engine accepted exceeds the key (2,427 vs 2,390), consistent with the same `max_tokens` tail.
+
+## 3. Why it matters for RL (indicative)
+Generation is reported at 65-72% of RL step time (NeMo-RL, arXiv:2604.26779); drafters drift as the policy changes (2603.12617,
+2609.07108). In the runs above a wrong or stale drafter cost 6-27% more target passes, roughly 4-20% of step time if passes ~ time.
+Rollouts with chosen-token log-probabilities already exist in RL, so ranking candidate drafters costs one drafter forward pass each.
+
+## 4. Limits
+Small models (0.5B/1.5B), one GPU type (T4), HF and vLLM only. EAGLE/MTP-style drafters (which read target hidden states) are not
+tested. Passes are not wall-clock time. Prediction-vs-real tests have ~1-4% sampling noise per row. Interpolated policies are a proxy.
+
+## 5. Reproduce
+`python tests/test_spectrace.py` (CPU). GPU experiments: `kaggle/<job>/run.py` (each ran as a Kaggle T4 script; `kaggle/wheelhouse`
+caches vLLM wheels and models). `python results/make_results.py` regenerates every table from `results/logs`.

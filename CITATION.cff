@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below, and cite Zhao & Cai (arXiv:2610.10411) for the offline round estimator."
+title: "spectrace: real-engine validation of offline speculative-decoding speed-up prediction, and drafter selection for RL rollouts"
+type: software
+authors:
+  - family-names: Shibu
+    given-names: Novain
+license: Apache-2.0
+repository-code: https://github.com/novain-shibu/spectrace
+date-released: 2026-10-16
+version: "0.1.0"
+keywords: [speculative decoding, speculative sampling, drafter selection, reinforcement learning, LLM inference, vLLM]
+references:
+  - type: article
+    title: "Training Parallel Speculative Draft Models by Directly Minimizing Expected Decoding Rounds"
+    authors:
+      - family-names: Zhao
+        given-names: Yunxiao
+      - family-names: Cai
+        given-names: Changxiao
+    identifiers:
+      - type: other
+        value: "arXiv:2610.10411"
+  - type: article
+    title: "Not-a-Bandit: Provably No-Regret Drafter Selection in Speculative Decoding for LLMs"
+    authors:
+      - family-names: Liu
+        given-names: Hongyi
+    identifiers:
+      - type: other
+        value: "arXiv:2510.20064"
