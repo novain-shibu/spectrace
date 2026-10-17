@@ -8,8 +8,8 @@ authors:
 license: Apache-2.0
 doi: 10.5281/zenodo.23413796
 repository-code: https://github.com/novain-shibu/spectrace
-date-released: 2026-10-16
-version: "0.1.1"
+date-released: 2026-10-17
+version: "0.1.2"
 keywords: [speculative decoding, speculative sampling, drafter selection, reinforcement learning, LLM inference, vLLM]
 references:
   - type: article

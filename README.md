@@ -11,9 +11,13 @@ This repository contributes engine validation, RL drafter-selection experiments 
 
 ## Headline numbers (T4, Qwen2.5 0.5B/1.5B)
 - Greedy, HF assisted generation, fp32: predicted target passes 931 = measured 931 (30/30 requests).
-- Sampling, HF (T=0.8, 120 runs): predicted 27.36 vs measured 27.28 passes.
-- Exact mechanism check: expected accepted tokens from HF's own p,q vs ours: -0.02% and -0.31%.
-- Drafter selection (6 policy/drafter pairs): predicted vs real passes within 0.2-1.2%, best drafter ranked correctly, and a swap
+- Sampling, HF (T=0.8, 240 runs): predicted 28.28 vs measured 28.23 passes (+0.2%; paired 95% CI -1.5% to +1.8%, so this
+  shows agreement within Monte Carlo noise at the ~1.5% level, not sub-percent accuracy). Correction: v0.1.x reported 27.36 vs 27.28
+  from an off-by-one comparison (see REPORT.md 2.2).
+- Exact mechanism check (no sampling noise): expected accepted tokens from HF's own p,q vs ours: -0.02% and -0.31%. This is the
+  only sub-percent evidence here.
+- Drafter selection (6 policy/drafter pairs): predicted vs real passes differ by 0.2-1.2%, within Monte Carlo noise (SE of each
+  difference ~2%), best drafter ranked correctly, and a swap
   of the 2nd/3rd drafters between two policies followed; ~2 s to predict vs ~5 min to measure.
 - Real RL pair (Qwen2.5-1.5B -> SimpleRL-Zoo-1.5B): drafter ranking unchanged by RL and preserved by the prediction; the 11-19%
   drop in passes after RL is tracked; errors within ~1 standard error.

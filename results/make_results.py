@@ -3,7 +3,7 @@
 import json, os, glob, statistics as st
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = HERE  # writes summary.json / summary.md next to this script
-LOGS = {"real_sampling1": "spectrace-real-sampling-1.log", "diag2": "spectrace-diag-2.log", "diag3": "spectrace-diag-3.log",
+LOGS = {"real_sampling1": "spectrace-real-sampling-1.log", "real_sampling2": "spectrace-real-sampling-2.log", "diag2": "spectrace-diag-2.log", "diag3": "spectrace-diag-3.log",
         "diag4": "spectrace-diag-4.log", "rlselect1": "spectrace-rlselect-1.log", "rldrift1": "spectrace-rldrift-1.log",
         "rlpaired1": "spectrace-rlpaired-1.log", "matrix1": "spectrace-matrix-1.log", "matrix2": "spectrace-matrix-2.log"}
 
@@ -24,10 +24,11 @@ rows = [l for l in log_lines("diag2") if l.startswith("torch.float32 {")]
 import ast
 eq = sum(ast.literal_eval(l.split(" ", 1)[1])["target_calls"] == ast.literal_eval(l.split(" ", 1)[1])["sim_pos0"] for l in rows)
 S["hf_greedy_exact"]["fp32_per_request_equal"] = f"{eq}/{len(rows)}"
-# 2) sampling, HF real engine (real_sampling1)
-for l in log_lines("real_sampling1"):
-    if l.startswith("RESULT"):
-        S["hf_sampling"] = json.loads(l[7:])
+# 2) sampling, HF real engine (real_sampling2; real_sampling1 kept as superseded: it compared E[1] with calls - 1, off by one)
+for job, key in (("real_sampling2", "hf_sampling"), ("real_sampling1", "hf_sampling_v1_superseded")):
+    for l in log_lines(job):
+        if l.startswith("RESULT"):
+            S[key] = json.loads(l[7:])
 # 3) exact mechanism (diag-3, diag-4)
 S["mechanism_diag3"] = [json.loads(l[7:]) for l in log_lines("diag3") if l.startswith("RESULT")]
 d4 = {}
@@ -66,7 +67,9 @@ md.append("## Greedy, draft-model drafter, HF assisted generation (diag-2)\n")
 for k, v_ in S["hf_greedy_exact"].items():
     md.append(f"- {k}: {v_}")
 h = S["hf_sampling"]
-md.append(f"\n## Speculative sampling, HF real engine (T={h['T']}, k={h['K']}, {h['n']} runs)\n\n- real passes {h['real_mean']:.2f} (SE {h['real_se']:.2f}) vs predicted {h['est_mean']:.2f} (SE {h['est_se']:.2f})")
+md.append(f"\n## Speculative sampling, HF real engine (T={h['T']}, k={h['K']}, {h['n']} runs)\n\n- real passes {h['real_mean']:.2f} (SE {h['real_se']:.2f}) vs predicted {h['est_mean']:.2f} (SE {h['est_se']:.2f}), {100*h['rel_diff']:+.2f}%; without EOS mask {h['est_raw_mean']:.2f}")
+h1 = S["hf_sampling_v1_superseded"]
+md.append(f"- superseded v1 (off by one: E[1] vs calls - 1): real {h1['real_mean']:.2f} vs predicted {h1['est_mean']:.2f}")
 md.append("\n## Exact mechanism check: expected accepted tokens from HF's own p,q vs ours\n")
 for r in S["mechanism_diag3"]:
     md.append(f"- {r['drafter']}: HF {r['expected_accepted_HF_pq']:.2f} vs ours {r['expected_accepted_our_pq']:.2f} ({100*(r['expected_accepted_our_pq']/r['expected_accepted_HF_pq']-1):+.2f}%), realized {r['realized_accepted']}")

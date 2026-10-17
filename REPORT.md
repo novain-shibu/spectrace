@@ -48,9 +48,18 @@ Fewer passes per output = faster. Two predictors, both computed from outputs the
 - Pitfall found on the way: Qwen2.5 instruct `generation_config` sets `repetition_penalty=1.1`; HF applies it to target and drafter,
   so a replay that ignores it disagrees (fp32: 360 vs 374). The replay must use the engine's full logits pipeline.
 
-### 2.2 Speculative sampling, HF (T=0.8, k=4, 30 prompts x 4 seeds = 120 runs)
-Real passes 27.28 (SE 0.47) vs predicted 27.36 (SE 0.42), using only ordinary target samples + chosen-token probabilities + one
-teacher-forced drafter pass. (Both sides exclude the first pass; see logs.)
+### 2.2 Speculative sampling, HF (T=0.8, k=4, 30 prompts x 8 seeds = 240 runs; job real_sampling2)
+Real passes 28.23 (SE 0.33) vs predicted 28.28 (SE 0.31), +0.19%, using only ordinary target samples + chosen-token probabilities +
+one teacher-forced drafter pass. Paired by prompt, the relative difference is +0.19% +- 0.84% (95% CI -1.45% to +1.84%): the
+prediction agrees with the engine within Monte Carlo noise; this run cannot resolve sub-percent bias. Both sides mask <|endoftext|>
+as HF's `min_new_tokens` processor does (unmasked: 28.28, no visible effect at this size).
+
+**Correction (v0.1.2).** v0.1.0/v0.1.1 reported 27.36 predicted vs 27.28 measured (real_sampling1, 120 runs). That comparison was
+off by one: it used the estimator from position 1 (E[1]) against `calls - 1`, treating HF's first target forward as a separate
+prefill. In HF assisted decoding the first target forward already verifies the first draft block, so the right comparison is E[0]
+against the full call count (as already used in 2.1 and 2.4). real_sampling2 uses that convention, matches the EOS mask on both
+sides and doubles the runs. Thanks to the authors of arXiv:2610.10411 for pointing this out, and for noting that runs of this size
+carry 1-4% standard errors. The old log is kept in `results/logs` and listed as superseded in `results/summary.md`.
 
 ### 2.3 Exact mechanism check (no sampling noise)
 HF's `_speculative_sampling` was wrapped to record the p and q it actually uses for every drafted token; expected accepted tokens

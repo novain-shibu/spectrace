@@ -4,9 +4,10 @@
 - torch.float16: {'target_calls': 932, 'sim_pos0': 929, 'identical': '25/30'}
 - fp32_per_request_equal: 30/30
 
-## Speculative sampling, HF real engine (T=0.8, k=4, 120 runs)
+## Speculative sampling, HF real engine (T=0.8, k=4, 240 runs)
 
-- real passes 27.28 (SE 0.47) vs predicted 27.36 (SE 0.42)
+- real passes 28.23 (SE 0.33) vs predicted 28.28 (SE 0.31), +0.19%; without EOS mask 28.28
+- superseded v1 (off by one: E[1] vs calls - 1): real 27.28 vs predicted 27.36
 
 ## Exact mechanism check: expected accepted tokens from HF's own p,q vs ours
 

@@ -1,0 +1,45 @@
+[{"stream_name":"stdout","time":29.54640164,"data":"transformers 5.16.1 Tesla T4\n"}
+,{"stream_name":"stderr","time":29.659337441,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":53.874199639,"data":"\rLoading weights:   0%|          | 0/338 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/338 [00:00\u003c03:28,  1.61it/s]\rLoading weights:  43%|████▎     | 147/338 [00:00\u003c00:00, 274.27it/s]\rLoading weights:  69%|██████▉   | 233/338 [00:01\u003c00:00, 270.24it/s]\rLoading weights:  86%|████████▋ | 292/338 [00:01\u003c00:00, 263.33it/s]\rLoading weights: 100%|██████████| 338/338 [00:01\u003c00:00, 285.90it/s]\rLoading weights: 100%|██████████| 338/338 [00:01\u003c00:00, 240.97it/s]\n"}
+,{"stream_name":"stderr","time":57.617647028,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:03,  4.56it/s]\rLoading weights:  70%|███████   | 203/290 [00:00\u003c00:00, 796.69it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 706.51it/s]\n"}
+,{"stream_name":"stdout","time":57.947144768,"data":"target eos [151645, 151643] draft eos [151645, 151643]\n"}
+,{"stream_name":"stderr","time":66.518431063,"data":"[transformers] Passing `generation_config` together with generation-related arguments=({'max_new_tokens', 'min_new_tokens', 'use_cache'}) is deprecated and will be removed in future versions. Please pass either a `generation_config` object OR all generation parameters explicitly, but not both.\n"}
+,{"stream_name":"stderr","time":66.519334023,"data":"[transformers] A custom logits processor of type \u003cclass 'transformers.generation.logits_process.MinNewTokensLengthLogitsProcessor'\u003e has been passed to `.generate()`, but it was also created in `.generate()`, given its parameterization. The custom \u003cclass 'transformers.generation.logits_process.MinNewTokensLengthLogitsProcessor'\u003e will take precedence. Please check the docstring of \u003cclass 'transformers.generation.logits_process.MinNewTokensLengthLogitsProcessor'\u003e to see related `.generate()` flags.\n"}
+,{"stream_name":"stdout","time":123.244801696,"data":"0 22.0 22.106324229615648\n"}
+,{"stream_name":"stdout","time":200.32128957,"data":"1 34.375 32.43836391213014\n"}
+,{"stream_name":"stdout","time":267.141310406,"data":"2 27.125 27.176528876596482\n"}
+,{"stream_name":"stdout","time":336.987385708,"data":"3 29.5 30.03925169258069\n"}
+,{"stream_name":"stdout","time":399.650371844,"data":"4 23.875 25.5169719429368\n"}
+,{"stream_name":"stdout","time":464.117886766,"data":"5 24.875 25.90420746329702\n"}
+,{"stream_name":"stdout","time":543.606807599,"data":"6 36.5 36.32281337195765\n"}
+,{"stream_name":"stdout","time":605.650065845,"data":"7 23.75 24.28441885776679\n"}
+,{"stream_name":"stdout","time":672.84538186,"data":"8 27.375 26.738201596738918\n"}
+,{"stream_name":"stdout","time":746.119840932,"data":"9 32.375 32.91884349017329\n"}
+,{"stream_name":"stdout","time":816.164427548,"data":"10 29.875 31.067455059745075\n"}
+,{"stream_name":"stdout","time":880.68596117,"data":"11 25.75 25.73943942223171\n"}
+,{"stream_name":"stdout","time":949.604545804,"data":"12 28.75 29.0588973010867\n"}
+,{"stream_name":"stdout","time":1013.760129912,"data":"13 25.625 23.439610946153145\n"}
+,{"stream_name":"stdout","time":1080.954167392,"data":"14 27.625 29.06751064775991\n"}
+,{"stream_name":"stdout","time":1144.636130433,"data":"15 24.5 26.504060302286888\n"}
+,{"stream_name":"stdout","time":1211.434739323,"data":"16 26.75 27.065249453913445\n"}
+,{"stream_name":"stdout","time":1282.51676611,"data":"17 29.75 26.496673666925815\n"}
+,{"stream_name":"stdout","time":1367.793855757,"data":"18 41.0 39.877900500678436\n"}
+,{"stream_name":"stdout","time":1429.922161451,"data":"19 24.5 25.559983129141088\n"}
+,{"stream_name":"stdout","time":1486.831624821,"data":"20 20.75 20.48550632899386\n"}
+,{"stream_name":"stdout","time":1556.34937177,"data":"21 30.875 29.562804766092707\n"}
+,{"stream_name":"stdout","time":1624.054530633,"data":"22 28.75 28.91729158057536\n"}
+,{"stream_name":"stdout","time":1692.306256368,"data":"23 28.5 26.113614776328674\n"}
+,{"stream_name":"stdout","time":1752.265882218,"data":"24 22.25 23.89934449906231\n"}
+,{"stream_name":"stdout","time":1825.328545255,"data":"25 31.625 32.37072746929398\n"}
+,{"stream_name":"stdout","time":1890.092935197,"data":"26 25.625 25.53391896523803\n"}
+,{"stream_name":"stdout","time":1958.574144976,"data":"27 28.5 28.15371276825612\n"}
+,{"stream_name":"stdout","time":2035.250295247,"data":"28 34.125 36.06650467539545\n"}
+,{"stream_name":"stdout","time":2105.914911396,"data":"29 29.875 29.972262107288955\n"}
+,{"stream_name":"stdout","time":2105.937300196,"data":"RESULT {\"n\": 240, \"real_mean\": 28.225, \"real_se\": 0.33055745214208476, \"est_mean\": 28.279946460008038, \"est_se\": 0.3125997277039731, \"est_raw_mean\": 28.28004427242957, \"rel_diff\": 0.0019467302040048278, \"T\": 0.8, \"K\": 4, \"L\": 96, \"REP\": 8}\n"}
+,{"stream_name":"stderr","time":2112.63001689,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2112.630046491,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2112.901428497,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2112.901454278,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2113.666422405,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2114.704303612,"data":"[NbConvertApp] Writing 301767 bytes to __results__.html\n"}
+]
