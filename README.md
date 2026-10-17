@@ -51,7 +51,7 @@ Test (CPU, no downloads): `python tests/test_spectrace.py`
 Small models, one GPU type, HF + vLLM only; EAGLE/MTP drafters untested; passes are not wall-clock. See REPORT.md section 4.
 
 ## Cite
-Novain Shibu (2026). spectrace. Zenodo. https://doi.org/10.5281/zenodo.23413796 (v0.1.0: 10.5281/zenodo.23413797).
+Novain Shibu (2026). spectrace. Zenodo. https://doi.org/10.5281/zenodo.23413796 (latest v0.1.2: 10.5281/zenodo.23431513).
 Please also cite Zhao & Cai, arXiv:2610.10411, for the offline round estimator.
 
 ## Licence
