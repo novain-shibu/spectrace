@@ -58,8 +58,7 @@ as HF's `min_new_tokens` processor does (unmasked: 28.28, no visible effect at t
 off by one: it used the estimator from position 1 (E[1]) against `calls - 1`, treating HF's first target forward as a separate
 prefill. In HF assisted decoding the first target forward already verifies the first draft block, so the right comparison is E[0]
 against the full call count (as already used in 2.1 and 2.4). real_sampling2 uses that convention, matches the EOS mask on both
-sides and doubles the runs. Thanks to the authors of arXiv:2610.10411 for pointing this out, and for noting that runs of this size
-carry 1-4% standard errors. The old log is kept in `results/logs` and listed as superseded in `results/summary.md`.
+sides and doubles the runs; runs of this size carry 1-4% standard errors, so they cannot resolve sub-percent differences. The old log is kept in `results/logs` and listed as superseded in `results/summary.md`.
 
 ### 2.3 Exact mechanism check (no sampling noise)
 HF's `_speculative_sampling` was wrapped to record the p and q it actually uses for every drafted token; expected accepted tokens

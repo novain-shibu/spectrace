@@ -1,4 +1,4 @@
-# SpecTrace real_sampling2 (corrects real_sampling1). Fixes from Zhao & Cai review 2026-10-17:
+# SpecTrace real_sampling2 (corrects real_sampling1). Fixes (2026-10-17):
 # (1) HF's first target forward already verifies the first draft block (no separate prefill call), so compare E[0] with the
 #     FULL calls[0] count (real_sampling1 used E[1] vs calls[0] - 1, an off-by-one mismatch);
 # (2) apply the same EOS mask as HF's MinNewTokensLogitsProcessor (min_new_tokens = L) to BOTH p and q (diag-4: <|endoftext|>);
